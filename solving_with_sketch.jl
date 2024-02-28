@@ -582,7 +582,7 @@ function transpose_sparse(A_sparse, m, n)
     return A_sparse
 end
 
-function sketch_and_solve(A_sparse, b, factor, reduce_factor, method::String, initial_guess, sketch_method::String)
+function sketch_and_precondition(A_sparse, b, factor, reduce_factor, method::String, initial_guess, sketch_method::String)
     m, n = size(A_sparse)
     d = factor * n
     A_hat = zeros(d, n)
@@ -666,7 +666,7 @@ function test_pipeline(matrix_name, method, sketch_method)
    
     println("solve with sketching in span of A_sparse plus gaussian noise")
     sketch_factor = 2
-    t_sap = @timed res = sketch_and_solve(A_sparse, b, sketch_factor, 1, method, zeros(n), sketch_method);
+    t_sap = @timed res = sketch_and_precondition(A_sparse, b, sketch_factor, 1, method, zeros(n), sketch_method);
     temp = A_sparse * res - b
     println("total time for sap with overhead: ", t_sap.time - t_sap.gctime)
     println("memory used: ", sketch_factor * n * n * 8 / 1000^2)
